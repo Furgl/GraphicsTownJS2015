@@ -2,10 +2,10 @@
  * 
  */
 
-function Sphere() {}
+function Shapes() {}
 
 
-Sphere.prototype.calculateNormals = function(posArray) {
+Shapes.prototype.calculateNormals = function(posArray) {
 	if (!posArray)
 		return null;
 	var normals = [];
@@ -26,7 +26,7 @@ Sphere.prototype.calculateNormals = function(posArray) {
 };
 
 //puts points for triangles into array
-Sphere.prototype.setupSphere = function(radius, part, r, g, b, colorArray, xOffset, yOffset, zOffset) {
+Shapes.prototype.setupSphere = function(radius, part, r, g, b, colorArray, xOffset, yOffset, zOffset) {
 	var points = [];
 	//position
 	var theta = 0, phi = 0, index = 0;
@@ -77,6 +77,68 @@ Sphere.prototype.setupSphere = function(radius, part, r, g, b, colorArray, xOffs
 				colorArray.push(r, g, b, r, g, b, r, g, b);
 			}
 		}
+	}
+	return triangles;
+};
+Shapes.prototype.setupCylinder = function(radius, length, r, g, b, colorArray, xOffset, yOffset, zOffset) {
+	var segments = 50;
+	var triangles = [];
+	var theta = (Math.PI/180) * (360/segments); //Degrees = radians * (180 / π)
+	//bottom
+	for (var i =0; i<=segments*Math.PI; i++){
+		var x = Math.cos(theta*i) * radius + xOffset;
+		var y = Math.sin(theta*i) * radius + yOffset;
+		var z = 0.0 + zOffset;
+		triangles.push(x, y, z); 
+		colorArray.push(r, g, b);
+		triangles.push(xOffset, yOffset, zOffset); 
+		colorArray.push(r, g, b); 
+	}
+	//middle
+	for (var i =0; i<=segments*Math.PI; i++){
+		var x = Math.cos(theta*i) * radius + xOffset;
+		var y = Math.sin(theta*i) * radius + yOffset;
+		var z = 0.0 + zOffset;
+		triangles.push(x, y, z);
+		colorArray.push(r, g, b);
+		triangles.push(x, y, z + length);
+		colorArray.push(r, g, b);
+	}
+	//top
+	for (var i =0; i<=segments*Math.PI; i++){
+		var x = Math.cos(theta*i) * radius + xOffset;
+		var y = Math.sin(theta*i) * radius + yOffset;
+		var z = 0.0 + zOffset;
+		triangles.push(x, y, z + length);
+		colorArray.push(r, g, b);
+		triangles.push(xOffset, yOffset, zOffset + length); 
+		colorArray.push(r, g, b);
+	}
+	return triangles;
+};
+Shapes.prototype.setupCone = function(radius, length, r, g, b, colorArray, xOffset, yOffset, zOffset, zTilt) {
+	var segments = 50;
+	var triangles = [];
+	var theta = (Math.PI/180) * (360/segments); //Degrees = radians * (180 / π)
+	//bottom
+	for (var i =0; i<=segments*Math.PI; i++){
+		var x = Math.cos(theta*i) * radius + xOffset;
+		var y = 0.0 + yOffset;
+		var z = Math.sin(theta*i) * radius + zOffset;
+		triangles.push(x, y, z); 
+		colorArray.push(r, g, b);
+		triangles.push(xOffset, yOffset, zOffset); 
+		colorArray.push(r, g, b); 
+	}
+	//middle
+	for (var i =0; i<=segments*Math.PI; i++){
+		var x = Math.cos(theta*i) * radius + xOffset;
+		var y = 0.0 + yOffset;
+		var z = Math.sin(theta*i) * radius + zOffset;
+		triangles.push(x, y, z);
+		colorArray.push(r, g, b);
+		triangles.push(xOffset, y + length, zTilt + zOffset);
+		colorArray.push(r, g, b);
 	}
 	return triangles;
 };

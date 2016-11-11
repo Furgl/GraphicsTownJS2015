@@ -45,7 +45,7 @@ window.onload = function() {
     // make a place to put the drawing controls - a div
     var controls = document.createElement("DIV");
     controls.id = "controls";
-    controls.style = "margin-left: "+(window.innerWidth/2-180)+"px;"; //added to center controls
+    controls.style = "margin-left: "+(window.innerWidth/2-280)+"px;"; //added to center controls
     document.body.appendChild(controls);
 
     // a switch between camera modes
@@ -71,7 +71,7 @@ window.onload = function() {
     controls.appendChild(resetButton);
 
     // make some checkboxes - using my cheesy panels code
-    var checkboxes = makeCheckBoxes([ ["Run",1], ["Examine",0] ]); //
+    var checkboxes = makeCheckBoxes([ ["Run",1], ["DayCycle",1], ["Examine",0]]); //
 
     // a selector for which object should be examined
     var toExamine = document.createElement("select");
@@ -81,7 +81,7 @@ window.onload = function() {
     controls.appendChild(toExamine);
 
     // make some sliders - using my cheesy panels code
-    var sliders = makeSliders([["TimeOfDay",0,24,12]]);
+    var sliders = makeSliders([["TimeOfDay",0,2400,1200]]);
 
     // this could be gl = canvas.getContext("webgl");
     // but twgl is more robust
@@ -96,7 +96,6 @@ window.onload = function() {
         sunDirection : [0,1,0]
     }
     
-
     // information for the cameras
     var lookAt = [0,0,0];
     var lookFrom = [0,5,-10];
@@ -135,6 +134,12 @@ window.onload = function() {
             realtime += (curTime - lastTime);
         }
         lastTime = curTime;
+        
+        //advance day time if Day Cycle is checked
+        if (checkboxes.DayCycle.checked) {
+        	if (sliders.TimeOfDay.value++ == 2400)
+        		sliders.TimeOfDay.value = 0;
+        }
 
         // first, let's clear the screen
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -143,7 +148,7 @@ window.onload = function() {
 
         // figure out the transforms
         var projM = twgl.m4.perspective(fov, canvas.width/canvas.height, 0.1, 100); //aspect changed to prevent stretching
-        var cameraM = twgl.m4.lookAt(/*lookFrom*/[0, 50, 0],/*lookAt*/[0,0,0],[0,1,0]);
+        var cameraM = twgl.m4.lookAt(lookFrom,lookAt,[0,1,0]);
         var viewM = twgl.m4.inverse(cameraM);
 
         // implement the camera UI
@@ -203,9 +208,9 @@ window.onload = function() {
         }
 
         // get lighting information
-        var tod = Number(sliders.TimeOfDay.value);
-        var sunAngle = Math.PI * (tod-6)/12;
-        var sunDirection = [Math.cos(sunAngle),Math.sin(sunAngle),0];
+        var tod = Number(sliders.TimeOfDay.value); //var tod = Number(sliders.TimeOfDay.value);
+        var sunAngle = Math.PI * (tod-600)/1200;
+        var sunDirection = [Math.cos(sunAngle)*10,Math.sin(sunAngle)*10,0];
 
         // make a real drawing state for drawing
         var drawingState = {
