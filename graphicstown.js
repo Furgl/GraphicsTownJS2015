@@ -38,8 +38,8 @@ window.onload = function() {
 
     // set up the canvas and context
     var canvas = document.createElement("canvas");
-    canvas.setAttribute("width",window.innerWidth-15); //width changed to match screen
-    canvas.setAttribute("height",window.innerHeight-68); //height changed to match screen
+    canvas.setAttribute("width",window.innerWidth); //width changed to match screen
+    canvas.setAttribute("height",window.innerHeight-80); //height changed to match screen
     document.body.appendChild(canvas);
 
     // make a place to put the drawing controls - a div
