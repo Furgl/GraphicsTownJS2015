@@ -26,7 +26,7 @@
 //**************************************************************************
 function ABQuat() {
     "use strict";
-    this.x = 0;
+    this.x = 0.02; //changed default view
     this.y = 0;
     this.z = 0;
     this.w = 1;
@@ -83,7 +83,7 @@ ABQuat.prototype.mult = function(qR) {
 
 };
 ABQuat.prototype.zero = function() {
-    this.x = 0;
+    this.x = 0; 
     this.y = 0;
     this.z = 0;
     this.w = 1;
@@ -132,7 +132,9 @@ function ArcBall(canvas, callback) {
 ArcBall.prototype.reset = function() {
     "use strict";
     this.start.zero();
+    this.start.x = 0.02; //added to change reset
     this.now.zero();
+    this.now.x = 0.02; //added to change reset
     this.mode = 0;
 };
 ArcBall.prototype.getMatrix = function() {

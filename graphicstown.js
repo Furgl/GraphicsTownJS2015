@@ -38,13 +38,14 @@ window.onload = function() {
 
     // set up the canvas and context
     var canvas = document.createElement("canvas");
-    canvas.setAttribute("width",600);
-    canvas.setAttribute("height",600);
+    canvas.setAttribute("width",window.innerWidth-15); //width changed to match screen
+    canvas.setAttribute("height",window.innerHeight-68); //height changed to match screen
     document.body.appendChild(canvas);
 
     // make a place to put the drawing controls - a div
     var controls = document.createElement("DIV");
     controls.id = "controls";
+    controls.style = "margin-left: "+(window.innerWidth/2-180)+"px;"; //added to center controls
     document.body.appendChild(controls);
 
     // a switch between camera modes
@@ -60,6 +61,7 @@ window.onload = function() {
     resetButton.onclick = function() {
         // note - this knows about arcball (defined later) since arcball is lifted
         arcball.reset();
+        arcball.x = 0.02; //added to change reset
 
         drivePos = [0,.2,5];
         driveTheta = 0;
@@ -140,8 +142,8 @@ window.onload = function() {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         // figure out the transforms
-        var projM = twgl.m4.perspective(fov, 1, 0.1, 100);
-        var cameraM = twgl.m4.lookAt(lookFrom,lookAt,[0,1,0]);
+        var projM = twgl.m4.perspective(fov, canvas.width/canvas.height, 0.1, 100); //aspect changed to prevent stretching
+        var cameraM = twgl.m4.lookAt(/*lookFrom*/[0, 50, 0],/*lookAt*/[0,0,0],[0,1,0]);
         var viewM = twgl.m4.inverse(cameraM);
 
         // implement the camera UI
