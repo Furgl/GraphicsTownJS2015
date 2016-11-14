@@ -14,9 +14,8 @@ var Pokeball = undefined;
 		this.size = size || 1.0;
 	}
 	Pokeball.prototype.init = function(drawingState) {
-		var gl=drawingState.gl;
 		if (!shaderProgram) {
-			shaderProgram = twgl.createProgramInfo(gl, ["vs", "fs"]);
+			shaderProgram = twgl.createProgramInfo(drawingState.gl, ["vs", "fs"]);
 		}
 		if (!buffers) {
 			var pos = [];
@@ -27,27 +26,35 @@ var Pokeball = undefined;
 			pos.push.apply(pos, shapes.setupCylinder(0.15, 0.1, 0.98, 1.0, 1.0, colors, 0, 0, -0.53)); //outer button
 			pos.push.apply(pos, shapes.setupCylinder(0.1, 0.1, 0.98, 1.0, 1.0, colors, 0, 0, -0.57)); //inner button
 			var normals = shapes.calculateNormals(pos);
-			buffers = twgl.createBufferInfoFromArrays(gl, {vPos: pos, inColor: colors, vNormal: normals});
+			buffers = twgl.createBufferInfoFromArrays(drawingState.gl, {vPos: pos, inColor: colors, vNormal: normals});
 		}
 
 	};
 	Pokeball.prototype.draw = function(drawingState) {
-/*		var distance = 50;
+		/*var distance = 50;
 		this.position = [drawingState.sunDirection[0]*distance, drawingState.sunDirection[1]*distance, drawingState.sunDirection[2]*distance];*/
-		var modelM = twgl.m4.scaling([this.size,this.size,this.size]);
-		//var modelViewMatrix = twgl.m4.multiply(modelM, drawingState.view);
-		var normMatrix = twgl.m4.inverse(twgl.m4.transpose(modelM));
-		twgl.m4.setTranslation(modelM,this.position,modelM);
-		var gl = drawingState.gl;
-		gl.useProgram(shaderProgram.program);
-		twgl.setBuffersAndAttributes(gl,shaderProgram,buffers);
+		drawingState.gl.useProgram(shaderProgram.program);
+		var model1 = twgl.m4.scaling([this.size,this.size,this.size]);
+		twgl.m4.setTranslation(model1,this.position,model1);
+		twgl.m4.rotateY(model1, Math.PI, model1);
+
+		twgl.m4.translate(model1, [0.0, Math.abs(Math.cos(drawingState.realtime/160)+0.7)*0.3-0.1, 0], model1);
+		twgl.m4.rotateY(model1, Math.cos(drawingState.realtime/250)*0.3, model1);
+		twgl.m4.rotateX(model1, 0.6 + Math.cos(drawingState.realtime/300)*0.3, model1);
+		if(drawingState.realtime*180/160/Math.PI % 720 >= 620 || drawingState.realtime*180/160/Math.PI % 720 < 100)
+			twgl.m4.rotateX(model1, 3+3.14*Math.cos(drawingState.realtime/160-5*Math.PI/9), model1);
+		else if(drawingState.realtime*180/160/Math.PI % 720 >= 260 && drawingState.realtime*180/160/Math.PI % 720 < 460)
+			twgl.m4.rotateX(model1, 3-3.14*Math.cos(drawingState.realtime/160-5*Math.PI/9), model1);
+
+		var normMatrix = twgl.m4.inverse(twgl.m4.transpose(model1));
+		twgl.setBuffersAndAttributes(drawingState.gl,shaderProgram,buffers);
 		twgl.setUniforms(shaderProgram,{isPokeball: 1,
 			normalMatrix: normMatrix, view:drawingState.view, proj:drawingState.proj, 
-			lightDir:drawingState.sunDirection, model: modelM});
-		twgl.drawBufferInfo(gl, gl.TRIANGLES, buffers);
+			lightDir:drawingState.sunDirection, model: model1});
+		twgl.drawBufferInfo(drawingState.gl, drawingState.gl.TRIANGLES, buffers);
 	};
 	Pokeball.prototype.center = function(drawingState) {
 		return this.position;
 	}
 })();
-grobjects.push(new Pokeball("Pokeball",[0,1.7,0],3));
+grobjects.push(new Pokeball("Pokeball",[-3,1.9,0],3));

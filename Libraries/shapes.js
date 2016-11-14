@@ -142,3 +142,19 @@ Shapes.prototype.setupCone = function(radius, length, r, g, b, colorArray, xOffs
 	}
 	return triangles;
 };
+Shapes.prototype.setupCircle = function(radius, r, g, b, colorArray) {
+	var segments = 50;
+	var triangles = [];
+	var theta = (Math.PI/180) * (360/segments); //Degrees = radians * (180 / π)
+	//bottom
+	for (var i =0; i<=segments*Math.PI; i++){
+		var x = Math.cos(theta*i) * radius;
+		var y = 0.0;
+		var z = Math.sin(theta*i) * radius;
+		triangles.push(x, y, z); 
+		colorArray.push(r, g, b);
+		triangles.push(0, 0, 0); 
+		colorArray.push(r, g, b); 
+	}
+	return triangles;
+};

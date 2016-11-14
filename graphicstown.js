@@ -208,9 +208,9 @@ window.onload = function() {
         }
 
         // get lighting information
-        var tod = Number(sliders.TimeOfDay.value); //var tod = Number(sliders.TimeOfDay.value);
+        var tod = Number(sliders.TimeOfDay.value);
         var sunAngle = Math.PI * (tod-600)/1200;
-        var sunDirection = [Math.cos(sunAngle)*10,Math.sin(sunAngle)*10,0];
+        var sunDirection = [Math.cos(sunAngle)*100,Math.sin(sunAngle)*100,0];
 
         // make a real drawing state for drawing
         var drawingState = {
@@ -220,7 +220,8 @@ window.onload = function() {
             camera : cameraM,
             timeOfDay : tod,
             sunDirection : sunDirection,
-            realtime : realtime
+            realtime : realtime,
+            drivePos : drivePos //added for moon/sun to angle
         }
 
         // initialize all of the objects that haven't yet been initialized (that way objects can be added at any point)
