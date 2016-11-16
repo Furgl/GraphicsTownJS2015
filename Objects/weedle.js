@@ -158,13 +158,13 @@ var Weedle = undefined;
 				}
 				else if (this.prevTime != drawingState.realtime) {
 					if (this.position[0] > this.destination[0])
-						this.position[0] -= Math.min(Math.abs(this.destination[0]-this.position[0]), (Math.cos(drawingState.realtime/200)+1)*Math.abs(this.destination[0]-this.origPos[0])/3000);
+						this.position[0] -= Math.min(Math.abs(this.destination[0]-this.position[0]), (-Math.cos(drawingState.realtime/200)+1)*Math.abs(this.destination[0]-this.origPos[0])/3500);
 					else if (this.position[0] < this.destination[0])
-						this.position[0] += Math.min(Math.abs(this.destination[0]-this.position[0]), (Math.cos(drawingState.realtime/200)+1)*Math.abs(this.destination[0]-this.origPos[0])/3000); //Math.abs(this.destination[0]-this.origPos[0])/1000
+						this.position[0] += Math.min(Math.abs(this.destination[0]-this.position[0]), (-Math.cos(drawingState.realtime/200)+1)*Math.abs(this.destination[0]-this.origPos[0])/3500); //Math.abs(this.destination[0]-this.origPos[0])/1000
 					if (this.position[2] > this.destination[2])
-						this.position[2] -= Math.min(Math.abs(this.destination[2]-this.position[2]), (Math.cos(drawingState.realtime/200)+1)*Math.abs(this.destination[2]-this.origPos[2])/3000);
+						this.position[2] -= Math.min(Math.abs(this.destination[2]-this.position[2]), (-Math.cos(drawingState.realtime/200)+1)*Math.abs(this.destination[2]-this.origPos[2])/3500);
 					else if (this.position[2] < this.destination[2])
-						this.position[2] += Math.min(Math.abs(this.destination[2]-this.position[2]), (Math.cos(drawingState.realtime/200)+1)*Math.abs(this.destination[2]-this.origPos[2])/3000);
+						this.position[2] += Math.min(Math.abs(this.destination[2]-this.position[2]), (-Math.cos(drawingState.realtime/200)+1)*Math.abs(this.destination[2]-this.origPos[2])/3500);
 				}
 			}
 
