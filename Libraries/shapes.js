@@ -31,10 +31,10 @@ Shapes.prototype.setupSphere = function(radius, part, r, g, b, colorArray, xOffs
 	//position
 	var theta = 0, phi = 0, index = 0;
 	//vertical stripes
-	for (phi = 0; phi < 2.001 * Math.PI; phi = phi + (1 / 30) * Math.PI) {
+	for (phi = 0; phi < 2.001 * Math.PI; phi = phi + (1 / 50) * Math.PI) {
 		points[index] = [];
 		//starts from top
-		for (theta = 0; theta < 1.001 * Math.PI; theta = theta + (1 / 30) * Math.PI) {
+		for (theta = 0; theta < 1.001 * Math.PI; theta = theta + (1 / 50) * Math.PI) {
 			var x = xOffset + radius * Math.sin(theta) * Math.cos(phi);
 			var y = yOffset + radius * Math.cos(theta);
 			var z = zOffset + radius * Math.sin(theta) * Math.sin(phi);
@@ -83,22 +83,22 @@ Shapes.prototype.setupSphere = function(radius, part, r, g, b, colorArray, xOffs
 Shapes.prototype.setupCylinder = function(radius, length, r, g, b, colorArray, xOffset, yOffset, zOffset) {
 	var segments = 50;
 	var triangles = [];
-	var theta = (Math.PI/180) * (360/segments); //Degrees = radians * (180 / π)
+	var theta = (Math.PI/180) * (360/segments); //Degrees = radians * (180 / π) -> (Math.PI/180) * (360/segments);
 	//bottom
 	for (var i =0; i<=segments*Math.PI; i++){
 		var x = Math.cos(theta*i) * radius + xOffset;
 		var y = Math.sin(theta*i) * radius + yOffset;
-		var z = 0.0 + zOffset;
+		var z = zOffset;
 		triangles.push(x, y, z); 
 		colorArray.push(r, g, b);
 		triangles.push(xOffset, yOffset, zOffset); 
 		colorArray.push(r, g, b); 
 	}
 	//middle
-	for (var i =0; i<=segments*Math.PI; i++){
+	for (var i=0; i<=segments*Math.PI; i++){
 		var x = Math.cos(theta*i) * radius + xOffset;
 		var y = Math.sin(theta*i) * radius + yOffset;
-		var z = 0.0 + zOffset;
+		var z = zOffset;
 		triangles.push(x, y, z);
 		colorArray.push(r, g, b);
 		triangles.push(x, y, z + length);
@@ -108,7 +108,7 @@ Shapes.prototype.setupCylinder = function(radius, length, r, g, b, colorArray, x
 	for (var i =0; i<=segments*Math.PI; i++){
 		var x = Math.cos(theta*i) * radius + xOffset;
 		var y = Math.sin(theta*i) * radius + yOffset;
-		var z = 0.0 + zOffset;
+		var z = zOffset;
 		triangles.push(x, y, z + length);
 		colorArray.push(r, g, b);
 		triangles.push(xOffset, yOffset, zOffset + length); 
@@ -130,7 +130,7 @@ Shapes.prototype.setupCone = function(radius, length, r, g, b, colorArray, xOffs
 		triangles.push(xOffset, yOffset, zOffset); 
 		colorArray.push(r, g, b); 
 	}
-	//middle
+	//cone
 	for (var i =0; i<=segments*Math.PI; i++){
 		var x = Math.cos(theta*i) * radius + xOffset;
 		var y = 0.0 + yOffset;
@@ -139,6 +139,10 @@ Shapes.prototype.setupCone = function(radius, length, r, g, b, colorArray, xOffs
 		colorArray.push(r, g, b);
 		triangles.push(xOffset, y + length, zTilt + zOffset);
 		colorArray.push(r, g, b);
+		if (i+1>segments*Math.PI) {
+			triangles.push(xOffset, y + length, zTilt + zOffset);
+			colorArray.push(r, g, b);
+		}			
 	}
 	return triangles;
 };
@@ -146,8 +150,7 @@ Shapes.prototype.setupCircle = function(radius, r, g, b, colorArray) {
 	var segments = 50;
 	var triangles = [];
 	var theta = (Math.PI/180) * (360/segments); //Degrees = radians * (180 / π)
-	//bottom
-	for (var i =0; i<=segments*Math.PI; i++){
+	for (var i=0; i<=segments*Math.PI; i++){
 		var x = Math.cos(theta*i) * radius;
 		var y = 0.0;
 		var z = Math.sin(theta*i) * radius;
@@ -156,5 +159,87 @@ Shapes.prototype.setupCircle = function(radius, r, g, b, colorArray) {
 		triangles.push(0, 0, 0); 
 		colorArray.push(r, g, b); 
 	}
+	return triangles;
+};
+Shapes.prototype.setupRectangularPrism = function(height, width, length, r, g, b, colorArray) {
+	var triangles = [];
+	//far plane
+	triangles.push(width/2, height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(width/2, -height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, -height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(width/2, height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, -height/2, length/2);
+	colorArray.push(r, g, b);
+	//close plane
+	triangles.push(width/2, height/2, -length/2);
+	colorArray.push(r, g, b);
+	triangles.push(width/2, -height/2, -length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, -height/2, -length/2);
+	colorArray.push(r, g, b);
+	triangles.push(width/2, height/2, -length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, height/2, -length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, -height/2, -length/2);
+	colorArray.push(r, g, b);
+	//right plane
+	triangles.push(width/2, height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(width/2, -height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(width/2, -height/2, -length/2);
+	colorArray.push(r, g, b);
+	triangles.push(width/2, height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(width/2, height/2, -length/2);
+	colorArray.push(r, g, b);
+	triangles.push(width/2, -height/2, -length/2);
+	colorArray.push(r, g, b);
+	//left plane
+	triangles.push(-width/2, height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, -height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, -height/2, -length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, height/2, -length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, -height/2, -length/2);
+	colorArray.push(r, g, b);
+	//top plane
+	triangles.push(width/2, height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, height/2, -length/2);
+	colorArray.push(r, g, b);
+	triangles.push(width/2, height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(width/2, height/2, -length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, height/2, -length/2);
+	colorArray.push(r, g, b);
+	//bottom plane
+	triangles.push(width/2, -height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, -height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, -height/2, -length/2);
+	colorArray.push(r, g, b);
+	triangles.push(width/2, -height/2, length/2);
+	colorArray.push(r, g, b);
+	triangles.push(width/2, -height/2, -length/2);
+	colorArray.push(r, g, b);
+	triangles.push(-width/2, -height/2, -length/2);
+	colorArray.push(r, g, b);
 	return triangles;
 };

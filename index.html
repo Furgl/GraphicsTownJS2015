@@ -16,11 +16,12 @@
 	<script src="grobject.js"></script>
 
 	<!-- This is where we load the objects for the world -->
+	<script src="Objects/outerSkybox.js"></script>
+    <script src="Objects/pokeball.js"></script>
+	<script src="Objects/innerSkybox.js"></script>
     <script src="Objects/ground.js"></script>
-	<script src="Objects/pokeball.js"></script>
+	<script src="Objects/mountains.js"></script>
 	<script src="Objects/weedle.js"></script>
-	<script src="Objects/sun.js"></script>
-	<script src="Objects/moon.js"></script>
 
 	<!-- This gets loaded LAST (actually, it probably doesn't have to) -->
 	<script src="graphicstown.js"></script>
@@ -31,6 +32,7 @@
     uniform float isPokeball; //cut off part of pokeball
     uniform float isSun; //give extra light
     uniform float isMoon; //give extra light
+    uniform float isGround; //give extra light
     uniform mat4 view;
     uniform mat4 proj;
     uniform mat4 model;
@@ -43,21 +45,26 @@
 
     varying vec3 outColor;
     varying vec3 fPos;
+    varying vec3 vertPos;
     varying vec3 fNormal;
     varying vec3 normalInterp;
 
     void main(void) {
         fNormal = normalize(mat3(normalMatrix) * vNormal);
         gl_Position = proj * view * model * vec4(vPos, 1.0);
-        fPos = vPos;
+        fPos = (view * model * vec4(vPos, 1.0)).xyz;
+        vertPos = vPos;
         outColor = inColor;
     }
 </script>
 <script id="fs" type="notjs">
     precision highp float;
+    uniform float isInnerSkybox; //add sun/moon
     uniform float isPokeball; //cut off part of pokeball
-    uniform float isSun; //give extra light   
-    uniform float isMoon; //give extra light 
+    uniform float isMountains; //cut off part of mountains
+    uniform float isGround; //give extra light
+    uniform float isOuterSkybox; //give extra light
+    uniform float isWeedle; //give extra light
     uniform mat4 view;
     uniform mat4 proj;
     uniform mat4 model;
@@ -66,31 +73,54 @@
 
     varying vec3 outColor;
     varying vec3 fPos;
+    varying vec3 vertPos;
     varying vec3 fNormal;
     varying vec3 normalInterp;
 
-    float Ka = 0.3;
-    float Kd = 0.4;
+    float Ka = 0.4;
+    float Kd = 0.9;
     float Ks = 1.5;
     float sExp = 100.0;
     vec3 lightCol = vec3(1.0,1.0,1.0);
 
     void main(void) {
-      if (isPokeball == 1.0 && (outColor.x >= 0.99) && fPos.z < -0.51) //cut out pokeball
-        discard;
-      else if (isSun == 1.0)
-        Ka += 0.9;
-      else if (isMoon == 1.0)
-        Ka += 0.5;      
+      if (isPokeball == 1.0 && (outColor.x >= 0.99) && vertPos.z < -0.95) //cut out pokeball
+        discard;  
+      else if (isMountains == 1.0 && sqrt(pow(vertPos.x, 2.0)+pow(vertPos.y, 2.0)+pow(vertPos.z, 2.0)) > 10.0)
+        discard; 
+     
+      vec3 lightDir2 = lightDir; 
+      vec3 outColor2 = outColor;   
 
-      vec3 lightDir2 = lightDir;    
+      if (isInnerSkybox == 1.0) {
+        float length = sqrt(pow(lightDir2.x, 2.0)+pow(lightDir2.y, 2.0)+pow(lightDir2.z, 2.0));
+        vec3 point1 = lightDir2 * 10.0 / length;
+        vec3 point2 = -lightDir2 * 10.0 / length;
+        if (sqrt(pow(vertPos.x-point1.x, 2.0)+pow(vertPos.y-point1.y, 2.0)+pow(vertPos.z-point1.z, 2.0)) < 9.02) {
+          Ks = 0.0;
+          outColor2 = vec3(1.0, 0.9, 0.0); 
+        }
+        else if (sqrt(pow(vertPos.x-point2.x, 2.0)+pow(vertPos.y-point2.y, 2.0)+pow(vertPos.z-point2.z, 2.0)) < 9.01) {
+          Ks = 0.0;
+          outColor2 = vec3(0.8, 0.8, 0.8);
+        }
+      }
 
-      if (lightDir[1] < 0.0) {  //night time
-        lightDir2 = vec3(-lightDir[0], -lightDir[1], -lightDir[2]);
+      if (lightDir[1] < 0.0 && isPokeball != 1.0) {  //night time
+        lightDir2 = -lightDir;
         Ka = 0.05;
         Kd = 0.2;
 	    lightCol = vec3(0.1, 0.1, 0.1);
+        if (isWeedle == 1.0 && outColor2.x >= 0.99)
+          Ka = 0.4;
       }
+      else if (isWeedle == 1.0 && outColor2.x >= 0.99)
+        Ka = 0.9;
+
+      if (isPokeball == 1.0) 
+        lightDir2 = vec3(1.0, 0.5, 1.0); 
+      else if (isGround == 1.0)
+        lightDir2 = -lightDir2;
 
       vec3 l=normalize(-lightDir2-fPos);
       vec3 n=normalize(fNormal);
@@ -101,11 +131,24 @@
       Kd *= abs(lightDir2[1]/100.0);
       Ks *= abs(lightDir2[1]/100.0);
 
-      vec3 ambientColor = Ka*outColor;
-      vec3 diffuseColor = Kd*outColor*dot(l,n);
+      if (isPokeball == 1.0) {
+        Ka = 0.4;
+        Kd = 0.4;
+        Ks = 1.5;
+      }
+      else if (isGround == 1.0)
+        Ks = 0.0;
+      else if (isInnerSkybox == 1.0)
+        Ks = 0.0; 
+
+      vec3 ambientColor = Ka*outColor2;
+      vec3 diffuseColor = Kd*outColor2*dot(l,n);
       vec3 specularColor = Ks*lightCol*pow(max(dot(h,n),0.0),sExp);
 
       gl_FragColor = vec4(ambientColor+diffuseColor+specularColor, 1.0);
+
+      if (isOuterSkybox == 1.0)
+        gl_FragColor = vec4(outColor2, 1.0);
     }
 </script>
 
