@@ -45,7 +45,6 @@ window.onload = function() {
     // make a place to put the drawing controls - a div
     var controls = document.createElement("DIV");
     controls.id = "controls";
-    controls.style = "margin-left: "+(window.innerWidth/2-280)+"px;"; //added to center controls
     document.body.appendChild(controls);
 
     // a switch between camera modes
@@ -71,7 +70,7 @@ window.onload = function() {
     controls.appendChild(resetButton);
 
     // make some checkboxes - using my cheesy panels code
-    var checkboxes = makeCheckBoxes([ ["Run",1], ["DayCycle",1], ["Examine",0]]); //
+    var checkboxes = makeCheckBoxes([ ["Run",1], ["DayCycle",0], ["Examine",0]]); //
 
     // a selector for which object should be examined
     var toExamine = document.createElement("select");
@@ -83,6 +82,10 @@ window.onload = function() {
     // make some sliders - using my cheesy panels code
     var sliders = makeSliders([["TimeOfDay",0,2400,1200]]);
 
+    var zoomInfo = document.createElement("span");
+    zoomInfo.innerHTML += "P.S. Use the scroll wheel to zoom in and out in ArcBall view";
+    controls.appendChild(zoomInfo);
+    
     // this could be gl = canvas.getContext("webgl");
     // but twgl is more robust
     var gl = twgl.getWebGLContext(canvas);
@@ -114,6 +117,9 @@ window.onload = function() {
 
     // cheesy keyboard handling
     var keysdown = {};
+    
+    //added - zoom in/out with scroll wheel
+    var zoom = -10;
 
     document.body.onkeydown = function(e) {
         var event = window.event ? window.event : e;
@@ -125,6 +131,9 @@ window.onload = function() {
         delete keysdown[event.keyCode];
         e.stopPropagation();
     };
+    canvas.addEventListener("wheel",function(e) { //added - zoom in/out with scroll wheel
+        zoom -= (e.deltaY/Math.abs(e.deltaY))*2;
+    });
 
     // the actual draw function - which is the main "loop"
     function draw() {
@@ -154,7 +163,7 @@ window.onload = function() {
         // implement the camera UI
         if (uiMode.value == "ArcBall") {
             viewM = arcball.getMatrix();
-            twgl.m4.setTranslation(viewM, [0, 0, -10], viewM);
+            twgl.m4.setTranslation(viewM, [0, 0, zoom], viewM);
         } else if (uiMode.value == "Drive") {
             if (keysdown[65]) { driveTheta += .02; }
             if (keysdown[68]) { driveTheta -= .02; }

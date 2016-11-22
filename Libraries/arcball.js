@@ -127,7 +127,6 @@ function ArcBall(canvas, callback) {
         that.mode = 0;
         if (that.callback) that.callback();
     });
-
 }
 ArcBall.prototype.reset = function() {
     "use strict";
