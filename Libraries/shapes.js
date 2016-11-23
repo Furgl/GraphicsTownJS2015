@@ -161,85 +161,121 @@ Shapes.prototype.setupCircle = function(radius, r, g, b, colorArray) {
 	}
 	return triangles;
 };
-Shapes.prototype.setupRectangularPrism = function(height, width, length, r, g, b, colorArray) {
+Shapes.prototype.setupRectangularPrism = function(height, width, length, r, g, b, colorArray, texCoords) {
 	var triangles = [];
-	//far plane
+	//close plane
 	triangles.push(width/2, height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 1);
 	triangles.push(width/2, -height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(-width/2, -height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(1, 0);
 	triangles.push(width/2, height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 1);
 	triangles.push(-width/2, height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(1, 1);
 	triangles.push(-width/2, -height/2, length/2);
 	colorArray.push(r, g, b);
-	//close plane
+	texCoords.push(1, 0);
+	//far plane
 	triangles.push(width/2, height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(width/2, -height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(1, 0);
 	triangles.push(-width/2, -height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(1, 1);
 	triangles.push(width/2, height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(1, 0);
 	triangles.push(-width/2, height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(1, 0);
 	triangles.push(-width/2, -height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(1, 1);
 	//right plane
 	triangles.push(width/2, height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(width/2, -height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(1, 0);
 	triangles.push(width/2, -height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(1, 1);
 	triangles.push(width/2, height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(1, 0);
 	triangles.push(width/2, height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(width/2, -height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(1, 0);
 	//left plane
 	triangles.push(-width/2, height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(-width/2, -height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(-width/2, -height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(-width/2, height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(-width/2, height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(-width/2, -height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	//top plane
 	triangles.push(width/2, height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(-width/2, height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(-width/2, height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(width/2, height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(width/2, height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(-width/2, height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	//bottom plane
 	triangles.push(width/2, -height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(-width/2, -height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(-width/2, -height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(width/2, -height/2, length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(width/2, -height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	triangles.push(-width/2, -height/2, -length/2);
 	colorArray.push(r, g, b);
+	texCoords.push(0, 0);
 	return triangles;
 };

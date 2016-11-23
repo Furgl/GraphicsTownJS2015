@@ -27,6 +27,7 @@ div {
 	<script src="grobject.js"></script>
 
 	<!-- This is where we load the objects for the world -->
+	<script src="ExampleObjects/texturedplane.js"></script>
 	<script src="Objects/outerSkybox.js"></script>
     <script src="Objects/pokeball.js"></script>
 	<script src="Objects/innerSkybox.js"></script>
@@ -53,7 +54,9 @@ div {
     attribute vec3 vPos;
     attribute vec3 vNormal;
     attribute vec3 inColor;
+    attribute vec2 vTexCoord;
 
+    varying vec2 fTexCoord;
     varying vec3 outColor;
     varying vec3 fPos;
     varying vec3 vertPos;
@@ -61,6 +64,7 @@ div {
     varying vec3 normalInterp;
 
     void main(void) {
+        fTexCoord = vTexCoord;
         fNormal = normalize(mat3(normalMatrix) * vNormal);
         gl_Position = proj * view * model * vec4(vPos, 1.0);
         fPos = (view * model * vec4(vPos, 1.0)).xyz;
@@ -81,7 +85,9 @@ div {
     uniform mat4 model;
     uniform vec3 lightDir;
     uniform mat4 normalMatrix;
+    uniform sampler2D texSampler;
 
+    varying vec2 fTexCoord;
     varying vec3 outColor;
     varying vec3 fPos;
     varying vec3 vertPos;
@@ -125,7 +131,7 @@ div {
       }
 
       if (isPokeball == 1.0) 
-        lightDir2 = vec3(1.0, 0.5, 1.0); 
+        lightDir2 = vec3(0.0, 100.0, 40.0); 
       else if (isGround == 1.0)
         lightDir2 = -lightDir2;
       else if (isMountains == 1.0) 
@@ -160,8 +166,11 @@ div {
 
       gl_FragColor = vec4(ambientColor+diffuseColor+specularColor, 1.0);
 
-      if (isOuterSkybox == 1.0)
-        gl_FragColor = vec4(outColor2, 1.0);
+      if (isOuterSkybox == 1.0) {
+        vec4 texColor = texture2D(texSampler,fTexCoord);
+        gl_FragColor = vec4(texColor.xyz, texColor.a);
+        //gl_FragColor = vec4(outColor2, 1.0); //orig
+      }
     }
 </script>
 

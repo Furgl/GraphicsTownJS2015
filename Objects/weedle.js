@@ -181,4 +181,4 @@ var Weedle = undefined;
 		return this.position;
 	}
 })();
-grobjects.push(new Weedle("Weedle",[0,1.8,0],1));
+grobjects.push(new Weedle("Weedle",[0,1.85,0],1));

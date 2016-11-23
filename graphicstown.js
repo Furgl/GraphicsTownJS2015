@@ -61,6 +61,7 @@ window.onload = function() {
         // note - this knows about arcball (defined later) since arcball is lifted
         arcball.reset();
         arcball.x = 0.02; //added to change reset
+        zoom = -10; //added to reset zoom
 
         drivePos = [0,.2,5];
         driveTheta = 0;
