@@ -24,9 +24,72 @@ Shapes.prototype.calculateNormals = function(posArray) {
 	}
 	return normals;
 };
+Shapes.prototype.setupSphere2 = function(radius, part, r, g, b, colorArray, xOffset, yOffset, zOffset, texCoords) {
+	var latitudeBands = 30;
+	var longitudeBands = 30;
+	var vertexPositionData = [];
+	var normalData = [];
+	var texCoords = [];
+	for (var latNumber = 0; latNumber <= latitudeBands; latNumber++) {
+		var theta = latNumber * Math.PI / latitudeBands;
+		var sinTheta = Math.sin(theta);
+		var cosTheta = Math.cos(theta);
 
+		for (var longNumber = 0; longNumber <= longitudeBands; longNumber++) {
+			var phi = longNumber * 2 * Math.PI / longitudeBands;
+			var sinPhi = Math.sin(phi);
+			var cosPhi = Math.cos(phi);
+
+			var x = cosPhi * sinTheta;
+			var y = cosTheta;
+			var z = sinPhi * sinTheta;
+			var u = 1 - (longNumber / longitudeBands);
+			var v = 1 - (latNumber / latitudeBands);
+
+			normalData.push(x);
+			normalData.push(y);
+			normalData.push(z);
+			texCoords.push(u);
+			texCoords.push(v);
+			vertexPositionData.push(radius * x);
+			vertexPositionData.push(radius * y);
+			vertexPositionData.push(radius * z);
+		}
+	}
+	var indexData = [];
+	var sortedVertices = [];
+	for (var latNumber = 0; latNumber < latitudeBands; latNumber++) {
+		for (var longNumber = 0; longNumber < longitudeBands; longNumber++) {
+			var first = (latNumber * (longitudeBands + 1)) + longNumber;
+			var second = first + longitudeBands + 1;
+			indexData.push(first);
+			sortedVertices.push(vertexPositionData[first], vertexPositionData[first+1], vertexPositionData[first+2]);
+			indexData.push(second);
+			sortedVertices.push(vertexPositionData[second], vertexPositionData[second+1], vertexPositionData[second+2]);
+			indexData.push(first + 1);
+			sortedVertices.push(vertexPositionData[first+1], vertexPositionData[first+2], vertexPositionData[first+3]);
+
+			indexData.push(second);
+			sortedVertices.push(vertexPositionData[second], vertexPositionData[second+1], vertexPositionData[second+2]);
+			indexData.push(second + 1);
+			sortedVertices.push(vertexPositionData[second+1], vertexPositionData[second+2], vertexPositionData[second+3]);
+			indexData.push(first + 1);
+			sortedVertices.push(vertexPositionData[first+1], vertexPositionData[first+2], vertexPositionData[first+3]);
+		}
+	}
+/*	for (var i=0; i<indexData.length; i++)
+		sortedVertices.push(vertexPositionData[indexData[i]], vertexPositionData[indexData[i+1]], 
+				vertexPositionData[indexData[i+2]]);*/
+
+	//sortedVertices = [0,0,0, 0,1,0, 1,0,0, 1,0,0, 1,1,0, 0,1,0];
+	//texCoords = [0,0, 0,1, 1,0, 1,0, 1,1, 0,1];
+
+	return [vertexPositionData, texCoords, normalData, indexData];
+};
 //puts points for triangles into array
-Shapes.prototype.setupSphere = function(radius, part, r, g, b, colorArray, xOffset, yOffset, zOffset) {
+Shapes.prototype.setupSphere = function(radius, part, r, g, b, colorArray, xOffset, yOffset, zOffset, texCoords) {
+	if (!texCoords)
+		texCoords = [];
 	var points = [];
 	//position
 	var theta = 0, phi = 0, index = 0;
@@ -42,7 +105,7 @@ Shapes.prototype.setupSphere = function(radius, part, r, g, b, colorArray, xOffs
 					(part == "bottom" && y < 0.00) ||
 					(part == "button" && x) ||
 					(part == "all")) {
-				points[index].push({x: x, y: y, z: z});
+				points[index].push({x: x, y: y, z: z});				
 			}
 		}
 		index++;
@@ -58,20 +121,15 @@ Shapes.prototype.setupSphere = function(radius, part, r, g, b, colorArray, xOffs
 			var point2 = points[i][j + 1];
 			var point3 = points[i + 1][j + 1];
 			if (point1 && point2 && point3) {
-				var centerX = (point1.x + point2.x + point3.x) / 3;
-				var centerY = (point1.y + point2.y + point3.y) / 3;
-				var centerZ = (point1.z + point2.z + point3.z) / 3;
 				triangles.push(point1.x, point1.y, point1.z, point2.x, point2.y, point2.z,
 						point3.x, point3.y, point3.z);
 				colorArray.push(r, g, b, r, g, b, r, g, b);
+				texCoords.push(0,0, 1,0, 1,1);
 			}
 			point1 = points[i][j];
 			point2 = points[i + 1][j + 1];
 			point3 = points[i + 1][j];
 			if (point1 && point2 && point3) {
-				centerX = (point1.x + point2.x + point3.x) / 3;
-				centerY = (point1.y + point2.y + point3.y) / 3;
-				centerZ = (point1.z + point2.z + point3.z) / 3;
 				triangles.push(point1.x, point1.y, point1.z, point2.x, point2.y, point2.z,
 						point3.x, point3.y, point3.z);
 				colorArray.push(r, g, b, r, g, b, r, g, b);
