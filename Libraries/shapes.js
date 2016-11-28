@@ -24,7 +24,7 @@ Shapes.prototype.calculateNormals = function(posArray) {
 	}
 	return normals;
 };
-Shapes.prototype.setupSphere2 = function(radius, part, r, g, b, colorArray, xOffset, yOffset, zOffset, texCoords) {
+Shapes.prototype.setupSphere2 = function(radius, shape) {
 	var latitudeBands = 30;
 	var longitudeBands = 30;
 	var vertexPositionData = [];
@@ -41,7 +41,7 @@ Shapes.prototype.setupSphere2 = function(radius, part, r, g, b, colorArray, xOff
 			var cosPhi = Math.cos(phi);
 
 			var x = cosPhi * sinTheta;
-			var y = cosTheta;
+			var y = cosTheta / (shape == "circle" ? 1000 : 1);
 			var z = sinPhi * sinTheta;
 			var u = 1 - (longNumber / longitudeBands);
 			var v = 1 - (latNumber / latitudeBands);
@@ -70,8 +70,8 @@ Shapes.prototype.setupSphere2 = function(radius, part, r, g, b, colorArray, xOff
 			indexData.push(first + 1);
 		}
 	}
-
-	return [texCoords, vertexPositionData, indexData, normalData];
+ 
+	return {texCoords: texCoords, vertices: vertexPositionData, indexData: indexData, normals: normalData};
 };
 //puts points for triangles into array
 Shapes.prototype.setupSphere = function(radius, part, r, g, b, colorArray, xOffset, yOffset, zOffset, texCoords) {
@@ -191,6 +191,38 @@ Shapes.prototype.setupCone = function(radius, length, r, g, b, colorArray, xOffs
 	}
 	return triangles;
 };
+Shapes.prototype.setupCone2 = function(radius, length, xOffset, yOffset, zOffset, zTilt) {
+	var segments = 50;
+	var vertexPositionData = [];
+	var texCoords = [];
+	var theta = (Math.PI/180) * (360/segments); //Degrees = radians * (180 / π)
+	//bottom
+	for (var i =0; i<=segments*Math.PI; i++){
+		var x = Math.cos(theta*i) * radius + xOffset;
+		var y = yOffset;
+		var z = Math.sin(theta*i) * radius + zOffset;
+		vertexPositionData.push(x, y, z); 
+		texCoords.push(0, 0.5);
+		vertexPositionData.push(xOffset, yOffset, zOffset); 
+		texCoords.push(0.2, 0.5); 
+	}
+	//cone
+	for (var i =0; i<=segments*Math.PI; i++){
+		var x = Math.cos(theta*i) * radius + xOffset;
+		var y = yOffset;
+		var z = Math.sin(theta*i) * radius + zOffset;
+		vertexPositionData.push(x, y, z);
+		texCoords.push(x, y);
+		vertexPositionData.push(xOffset, y + length, zTilt + zOffset);
+		texCoords.push(xOffset, y+length);
+		if (i+1>segments*Math.PI) {
+			vertexPositionData.push(xOffset, y + length, zTilt + zOffset);
+			texCoords.push(xOffset, length);
+		}			
+	}
+	var normalData = this.calculateNormals(vertexPositionData);
+	return {vertices: vertexPositionData, texCoords: texCoords, normals: normalData};
+};
 Shapes.prototype.setupCircle = function(radius, r, g, b, colorArray) {
 	var segments = 50;
 	var triangles = [];
@@ -205,6 +237,23 @@ Shapes.prototype.setupCircle = function(radius, r, g, b, colorArray) {
 		colorArray.push(r, g, b); 
 	}
 	return triangles;
+};
+Shapes.prototype.setupCircle2 = function(radius) {
+	var segments = 50;
+	var triangles = [];
+	var texCoords = [];
+	var theta = (Math.PI/180) * (360/segments); //Degrees = radians * (180 / π)
+	for (var i=0; i<=segments*Math.PI; i++){
+		var x = Math.cos(theta*i) * radius;
+		var y = 0.0;
+		var z = Math.sin(theta*i) * radius;
+		triangles.push(x, y, z); 
+		texCoords.push(x, z);
+		triangles.push(0, 0, 0); 
+		texCoords.push(0, 0); 
+	}
+	var normalData = this.calculateNormals(triangles);
+	return {vertices: triangles, texCoords: texCoords, normals: normalData};
 };
 Shapes.prototype.setupRectangularPrism = function(height, width, length, r, g, b, colorArray, texCoords) {
 	var triangles = [];

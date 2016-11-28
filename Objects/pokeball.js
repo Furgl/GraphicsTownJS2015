@@ -55,5 +55,4 @@ var Pokeball = undefined;
 		return this.position;
 	}
 })();
-grobjects.push(new Pokeball("Big Pokeball",[0,0,0],34));
-grobjects.push(new Pokeball("Small Pokeball",[2000,0,0],34));
+grobjects.push(new Pokeball("Pokeball",[0,0,0],34));

@@ -25,9 +25,9 @@ div {
 	<script src="Libraries/shapes.js"></script>
 	<script src="grobject.js"></script>
 
-	<script src="Objects/outerSkybox.js"></script>
+	<script src="Objects/skybox.js"></script>
     <script src="Objects/pokeball.js"></script>
-	<script src="Objects/innerSkybox.js"></script>
+	<script src="Objects/skysphere.js"></script>
     <script src="Objects/ground.js"></script>
 	<script src="Objects/mountains.js"></script>
 	<script src="Objects/weedle.js"></script>
@@ -180,11 +180,14 @@ div {
     vec3 lightCol = vec3(1.0,1.0,1.0);
 
     void main(void) {
-      if (isPokeball == 1.0 && (outColor.x >= 0.99) && vertPos.z < -0.95) //cut out pokeball
+      if (isPokeball == 1.0 && outColor.x >= 0.99 && vertPos.z < -0.95) //cut out pokeball
         discard;  
       else if (isMountains == 1.0 && sqrt(pow(vertPos.x, 2.0)+pow(vertPos.y, 2.0)+pow(vertPos.z, 2.0)) > 10.0)
         discard; 
      
+      vec4 texColor;
+      if (isMountains == 1.0 || isGround == 1.0)
+        texColor = texture2D(texSampler, fTexCoord);
       vec3 lightDir2 = lightDir; 
       vec3 outColor2 = outColor;   
 
@@ -210,7 +213,7 @@ div {
       }
 
       if (isPokeball == 1.0) 
-        lightDir2 = vec3(0.0, 100.0, 40.0); 
+        lightDir2 = vec3(-100.0, 500.0, 500.0); 
       else if (isGround == 1.0)
         lightDir2 = -lightDir2;
       else if (isMountains == 1.0) 
@@ -230,7 +233,7 @@ div {
       if (isPokeball == 1.0) {
         Ka = 0.4;
         Kd = 0.4;
-        Ks = 1.5;
+        Ks = 1.0;
       }
       else if (isGround == 1.0)
         Ks = 0.0;
@@ -238,6 +241,9 @@ div {
         Ks = 0.0; 
       else if (isMountains == 1.0)
         Ks = 0.0;
+
+      if (isMountains == 1.0 || isGround == 1.0)
+        outColor2 = texColor.xyz;
 
       vec3 ambientColor = Ka*outColor2;
       vec3 diffuseColor = Kd*outColor2*dot(l,n);
