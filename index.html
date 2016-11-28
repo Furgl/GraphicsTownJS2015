@@ -25,12 +25,12 @@ div {
 	<script src="Libraries/shapes.js"></script>
 	<script src="grobject.js"></script>
 
-	<script src="Objects/skybox.js"></script>
-    <script src="Objects/pokeball.js"></script>
-	<script src="Objects/skysphere.js"></script>
     <script src="Objects/ground.js"></script>
+    <script src="Objects/weedle.js"></script>
 	<script src="Objects/mountains.js"></script>
-	<script src="Objects/weedle.js"></script>
+	<script src="Objects/skysphere.js"></script>
+    <script src="Objects/pokeball.js"></script>
+	<script src="Objects/skybox.js"></script>
 
 	<script src="graphicstown.js"></script>
 </body>
@@ -251,7 +251,7 @@ div {
         outColor2 = texColor.xyz;
 
         if (isMountains == 1.0 && vertPos.y > 1.5) //snow on mountain tops
-          outColor2.xyz += vec3((vertPos.y-1.5) * 1.3);
+          outColor2.xyz += vec3((vertPos.y-1.5) * 1.8);
       }
 
       vec3 ambientColor = Ka*outColor2;

@@ -143,4 +143,4 @@ var Mountains = undefined;
 		disableLocations(gl, this.attributes);
 	}
 })();
-grobjects.push(new Mountains("Mountains",[0,0.001,0],3));
+grobjects.push(new Mountains("Mountains",[0,0.005,0],3));

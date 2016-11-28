@@ -71,7 +71,7 @@ window.onload = function() {
     controls.appendChild(resetButton);
 
     // make some checkboxes - using my cheesy panels code
-    var checkboxes = makeCheckBoxes([ ["Run",1], ["DayCycle",0], ["Examine",0]]); //
+    var checkboxes = makeCheckBoxes([ ["Run",1], ["DayCycle",1], ["Examine",0]]); //
 
     // a selector for which object should be examined
     var toExamine = document.createElement("select");
@@ -122,8 +122,6 @@ window.onload = function() {
     //added - zoom in/out with scroll wheel
     var zoom = -10;
     
-    var xTranslation = 0;
-
     document.body.onkeydown = function(e) {
         var event = window.event ? window.event : e;
         keysdown[event.keyCode] = true;
@@ -139,13 +137,7 @@ window.onload = function() {
     });
 
     // the actual draw function - which is the main "loop"
-    function draw() {
-    	if (xTranslation == 0) {
-    		//xTranslation = -2000;
-    		//lookFrom = [-2000,5,-10];
-    		//lookAt = [-2000,0,0];
-    	}
-    	
+    function draw() {    	
         // advance the clock appropriately (unless its stopped)
         var curTime = Date.now();
         if (checkboxes.Run.checked) {
