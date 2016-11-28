@@ -220,6 +220,10 @@ div {
         lightDir2 = -lightDir2;
       else if (isWeedle == 1.0 && outColor2.x >= 0.99) 
         lightDir2 = -lightDir2;
+      else if (isWeedle == 1.0) {
+        Ks = 0.1;
+        sExp = 5.0;
+      }
 
       vec3 l=normalize(-lightDir2-fPos);
       vec3 n=normalize(fNormal);
@@ -243,7 +247,12 @@ div {
         Ks = 0.0;
 
       if (isMountains == 1.0 || isGround == 1.0)
+      {
         outColor2 = texColor.xyz;
+
+        if (isMountains == 1.0 && vertPos.y > 1.5) //snow on mountain tops
+          outColor2.xyz += vec3((vertPos.y-1.5) * 1.3);
+      }
 
       vec3 ambientColor = Ka*outColor2;
       vec3 diffuseColor = Kd*outColor2*dot(l,n);
