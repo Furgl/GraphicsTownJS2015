@@ -199,4 +199,5 @@ var OuterSkybox = undefined;
 		disableLocations(gl, this.attributes);
 	}
 })();
-grobjects.push(new OuterSkybox("Outer Skybox",[0,0,0],1000));
+grobjects.push(new OuterSkybox("Outer Skybox",[2000,0,0],1000));
+grobjects.push(new OuterSkybox("Inner Skybox",[0,0,0],1000));

@@ -121,6 +121,8 @@ window.onload = function() {
     
     //added - zoom in/out with scroll wheel
     var zoom = -10;
+    
+    var xTranslation = 0;
 
     document.body.onkeydown = function(e) {
         var event = window.event ? window.event : e;
@@ -138,6 +140,12 @@ window.onload = function() {
 
     // the actual draw function - which is the main "loop"
     function draw() {
+    	if (xTranslation == 0) {
+    		//xTranslation = -2000;
+    		//lookFrom = [-2000,5,-10];
+    		//lookAt = [-2000,0,0];
+    	}
+    	
         // advance the clock appropriately (unless its stopped)
         var curTime = Date.now();
         if (checkboxes.Run.checked) {
@@ -231,7 +239,7 @@ window.onload = function() {
             timeOfDay : tod,
             sunDirection : sunDirection,
             realtime : realtime,
-            drivePos : drivePos //added for moon/sun to angle
+            sunAngle : sunAngle //added inner skybox to rotate
         }
 
         // initialize all of the objects that haven't yet been initialized (that way objects can be added at any point)

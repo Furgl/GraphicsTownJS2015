@@ -34,19 +34,102 @@ div {
 
 	<script src="graphicstown.js"></script>
 </body>
+<script id="skysphere-vs" type="notjs">
+	precision highp float;
+	uniform mat4 proj;
+	uniform mat4 view;
+	uniform mat4 model;
+    uniform mat4 normalMatrix; 
 
+	attribute vec3 vPos;
+	attribute vec2 vTexCoord;
+    attribute vec3 vNormal;
+
+	varying vec2 fTexCoord;
+    varying vec3 fNormal;
+    varying vec3 fPos;
+    varying vec3 vertPos;
+
+	void main(void) {
+      vertPos = vPos;
+	  fTexCoord = vTexCoord;
+      fNormal = normalize(mat3(normalMatrix) * vNormal);
+      fPos = (view * model * vec4(vPos, 1.0)).xyz;
+	  gl_Position = proj * view * model * vec4(vPos, 1.0);
+	}
+</script>
+<script id="skysphere-fs" type="notjs">
+	precision highp float;
+	uniform sampler2D texSampler;
+    uniform vec3 lightDir;
+
+	varying vec2 fTexCoord;
+    varying vec3 fNormal;
+    varying vec3 fPos;
+    varying vec3 vertPos;
+
+    float Ka = 0.3; 
+    float Kd = 1.0; 
+    float Ks = 1.5; 
+    float sExp = 100.0; 
+    vec3 lightCol = vec3(1.0,1.0,1.0);
+
+	void main(void) {
+	  vec3 lightDir2 = lightDir;
+      vec4 texColor = texture2D(texSampler, fTexCoord);
+
+      /*//sun/moon
+      float length = sqrt(pow(lightDir2.x, 2.0)+pow(lightDir2.y, 2.0)+pow(lightDir2.z, 2.0));
+      vec3 point1 = lightDir2 * 10.0 / length;
+      vec3 point2 = -lightDir2 * 10.0 / length;
+      if (sqrt(pow(vertPos.x-point1.x, 2.0)+pow(vertPos.y-point1.y, 2.0)+pow(vertPos.z-point1.z, 2.0)) < 9.02) {
+        Ks = 0.0;
+        texColor.xyz = vec3(1.0, 0.9, 0.0); 
+      }
+      else if (sqrt(pow(vertPos.x-point2.x, 2.0)+pow(vertPos.y-point2.y, 2.0)+pow(vertPos.z-point2.z, 2.0)) < 9.01) {
+        Ks = 0.0;
+        texColor.xyz = vec3(0.8, 0.8, 0.8);
+      }*/
+
+      if (lightDir[1] < 0.0) {  //night time
+        lightDir2 = -lightDir;
+        Ka = 0.05;
+        Kd = 0.2;
+	    lightCol = vec3(0.1, 0.1, 0.1);
+      }
+
+      vec3 l=normalize(lightDir2-fPos);
+      vec3 n=normalize(fNormal);
+      vec3 e=normalize(-fPos);
+      vec3 h=normalize(e+l);
+
+      Ka *= abs(lightDir2[1]/100.0);
+      Kd *= abs(lightDir2[1]/100.0);
+      Ks *= 0.0;//abs(lightDir2[1]/100.0);
+
+      //Ka = 1.0;
+
+      vec3 ambientColor = Ka*texColor.xyz;
+      vec3 diffuseColor = Kd*texColor.xyz*dot(l,n);
+      vec3 specularColor = Ks*lightCol*pow(max(dot(h,n),0.0),sExp);
+
+      gl_FragColor = vec4(ambientColor+diffuseColor+specularColor, 1.0);
+	}
+</script>
 <script id="vs" type="notjs">
     precision highp float;
     uniform float isPokeball; //cut off part of pokeball
     uniform float isSun; //give extra light
     uniform float isMoon; //give extra light
     uniform float isGround; //give extra light
+    uniform float isInnerSkybox;
     uniform mat4 view;
     uniform mat4 proj;
     uniform mat4 model;
     uniform vec3 lightDir;
     uniform vec3 cubeColor;
     uniform mat4 normalMatrix; 
+
     attribute vec3 vPos;
     attribute vec3 vNormal;
     attribute vec3 inColor;

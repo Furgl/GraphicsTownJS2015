@@ -57,34 +57,21 @@ Shapes.prototype.setupSphere2 = function(radius, part, r, g, b, colorArray, xOff
 		}
 	}
 	var indexData = [];
-	var sortedVertices = [];
 	for (var latNumber = 0; latNumber < latitudeBands; latNumber++) {
 		for (var longNumber = 0; longNumber < longitudeBands; longNumber++) {
 			var first = (latNumber * (longitudeBands + 1)) + longNumber;
 			var second = first + longitudeBands + 1;
 			indexData.push(first);
-			sortedVertices.push(vertexPositionData[first], vertexPositionData[first+1], vertexPositionData[first+2]);
 			indexData.push(second);
-			sortedVertices.push(vertexPositionData[second], vertexPositionData[second+1], vertexPositionData[second+2]);
 			indexData.push(first + 1);
-			sortedVertices.push(vertexPositionData[first+1], vertexPositionData[first+2], vertexPositionData[first+3]);
 
 			indexData.push(second);
-			sortedVertices.push(vertexPositionData[second], vertexPositionData[second+1], vertexPositionData[second+2]);
 			indexData.push(second + 1);
-			sortedVertices.push(vertexPositionData[second+1], vertexPositionData[second+2], vertexPositionData[second+3]);
 			indexData.push(first + 1);
-			sortedVertices.push(vertexPositionData[first+1], vertexPositionData[first+2], vertexPositionData[first+3]);
 		}
 	}
-/*	for (var i=0; i<indexData.length; i++)
-		sortedVertices.push(vertexPositionData[indexData[i]], vertexPositionData[indexData[i+1]], 
-				vertexPositionData[indexData[i+2]]);*/
 
-	//sortedVertices = [0,0,0, 0,1,0, 1,0,0, 1,0,0, 1,1,0, 0,1,0];
-	//texCoords = [0,0, 0,1, 1,0, 1,0, 1,1, 0,1];
-
-	return [vertexPositionData, texCoords, normalData, indexData];
+	return [texCoords, vertexPositionData, indexData, normalData];
 };
 //puts points for triangles into array
 Shapes.prototype.setupSphere = function(radius, part, r, g, b, colorArray, xOffset, yOffset, zOffset, texCoords) {
