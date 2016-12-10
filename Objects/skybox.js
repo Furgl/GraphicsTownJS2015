@@ -145,7 +145,7 @@ var Skybox = undefined;
 		this.textures = [];
 		this.shapes = new Shapes();
 	}
- 
+
 	Skybox.prototype.init = function (drawingState) {
 		var gl = drawingState.gl;
 
@@ -166,6 +166,11 @@ var Skybox = undefined;
 	}
 
 	Skybox.prototype.draw = function (drawingState) {
+		if (drawingState.uiMode.value == "ArcBall") 
+			this.position = [0,0,0]; //not sure how to get location from arcball
+		else
+			this.position = drawingState.drivePos;
+
 		var gl = drawingState.gl;
 
 		gl.useProgram(this.program);
@@ -173,7 +178,7 @@ var Skybox = undefined;
 
 		var modelM = twgl.m4.scaling([this.size,this.size, this.size]);
 		twgl.m4.setTranslation(modelM,this.position, modelM);
-		
+
 		gl.uniformMatrix4fv(this.uniforms.pMatrix, gl.FALSE, drawingState.proj);
 		gl.uniformMatrix4fv(this.uniforms.vMatrix, gl.FALSE, drawingState.view);
 		gl.uniformMatrix4fv(this.uniforms.mMatrix, gl.FALSE, modelM);
@@ -197,4 +202,4 @@ var Skybox = undefined;
 		disableLocations(gl, this.attributes);
 	}
 })();
-grobjects.push(new Skybox("Skybox",[0,0,0],1000));
+grobjects.push(new Skybox("Skybox",[0,0,0],100000));

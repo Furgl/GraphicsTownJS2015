@@ -157,7 +157,7 @@ window.onload = function() {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         // figure out the transforms
-        var projM = twgl.m4.perspective(fov, canvas.width/canvas.height, 0.1, 10000); //aspect changed to prevent stretching
+        var projM = twgl.m4.perspective(fov, canvas.width/canvas.height, 0.1, 100000); //aspect changed to prevent stretching
         var cameraM = twgl.m4.lookAt(lookFrom,lookAt,[0,1,0]);
         var viewM = twgl.m4.inverse(cameraM);
 
@@ -231,7 +231,10 @@ window.onload = function() {
             timeOfDay : tod,
             sunDirection : sunDirection,
             realtime : realtime,
-            sunAngle : sunAngle //added inner skybox to rotate
+            sunAngle : sunAngle, //added to rotate skysphere
+            uiMode : uiMode, //added to move skybox
+            arcball : arcball, //added to move skybox
+            drivePos : drivePos //added to move skybox
         }
 
         // initialize all of the objects that haven't yet been initialized (that way objects can be added at any point)
