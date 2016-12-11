@@ -71,7 +71,7 @@ window.onload = function() {
     controls.appendChild(resetButton);
 
     // make some checkboxes - using my cheesy panels code
-    var checkboxes = makeCheckBoxes([ ["Run",1], ["DayCycle",0], ["Examine",0]]); //
+    var checkboxes = makeCheckBoxes([ ["Run",1], ["DayCycle",1], ["Examine",0]]); //
 
     // a selector for which object should be examined
     var toExamine = document.createElement("select");

@@ -103,6 +103,7 @@ var Bird = undefined;
 		this.ticks = Math.random()*10;
 		this.d0 = [0,0,0];
 		this.d1 = [(Math.random()-0.5)*5,(Math.random()-0.5)*5,(Math.random()-0.5)*5];
+		this.prevTime = 0;
 	}
 
 	Bird.prototype.init = function (drawingState) {
@@ -198,7 +199,9 @@ var Bird = undefined;
 		}
 
 		this.prevPosition = [this.position[0], this.position[1], this.position[2]];
-		this.ticks++;
+		if (this.prevTime != drawingState.realtime)
+			this.ticks++;
+		this.prevTime = drawingState.realtime;
 
 		//BODY
 		var modelM = twgl.m4.scaling([this.size,this.size, this.size]);
@@ -225,7 +228,7 @@ var Bird = undefined;
 		//WING1
 		var modelM = twgl.m4.scaling([this.size,this.size, this.size]);
 		twgl.m4.multiply(rotation, modelM, modelM);
-		var flap = Math.cos(drawingState.realtime/160-5*Math.PI/9) + Math.PI/2;
+		var flap = Math.cos(this.ticks/8-5*Math.PI/9) + Math.PI/2;
 		twgl.m4.setTranslation(modelM,[this.position[0], this.position[1]+0.3-flap/20, this.position[2]], modelM);
 		twgl.m4.rotateX(modelM, flap, modelM); //flap
 
