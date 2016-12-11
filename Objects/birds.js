@@ -100,9 +100,7 @@ var Bird = undefined;
 		this.end = [Math.random()*5, this.position[1], Math.random()*5];
 		this.increasing = this.position[0] < this.end[0];
 		this.prevPosition = [this.position[0], this.position[1], this.position[2]];
-
 		this.ticks = Math.random()*10;
-		
 		this.d0 = [0,0,0];
 		this.d1 = [(Math.random()-0.5)*5,(Math.random()-0.5)*5,(Math.random()-0.5)*5];
 	}
@@ -177,25 +175,16 @@ var Bird = undefined;
 		gl.useProgram(this.program);
 		gl.disable(gl.CULL_FACE);
 
-	    //var d0=[5,1,0];
-	    //var d1=[-3,-9,6];
-
-		var P = [this.start,this.d0,this.end,this.d1]; // All the control points
+		var P = [this.start,this.d0,this.end,this.d1];
 		var t = this.ticks/200;
 
 		this.position = Cubic(Hermite,P,t);
 		var rotation = twgl.m4.lookAt([0,0,0],Cubic(HermiteDerivative,P,t),[0,1,0]);
 		rotation = twgl.m4.axisRotate(rotation, [0,1,0], -Math.PI/2);
 
-		//console.log("end:"+this.end);
-		//console.log("current:"+this.position);
-		//console.log("prev: " + this.prevPosition[0]);
-		//console.log("current: " + this.position[0]);
-		//console.log("increasing: " + this.increasing);
-		console.log(this.ticks);
-		
 		if (this.position[0] < this.end[0] != this.increasing || this.ticks > 300) { //when it reaches distination
-			console.log("here");
+			if (this.ticks > 300)
+				console.log("failsafe activated!");
 			this.start = [this.position[0], this.position[1], this.position[2]];
 			do 
 				var newEnd = [(Math.random()-0.5)*30, (Math.random()-0.5)*2+15, (Math.random()-0.5)*30];
@@ -203,7 +192,6 @@ var Bird = undefined;
 					Math.pow(newEnd[2]-this.start[2], 2)) < 18);
 			this.end = newEnd;
 			this.increasing = this.position[0] < this.end[0];
-			console.log("new end: "+this.end);
 			this.ticks = 0;
 			this.d0 = this.d1;
 			this.d1 = [(Math.random()-0.5)*100,(Math.random()-0.5)*50,(Math.random()-0.5)*100];
@@ -285,6 +273,4 @@ var Bird = undefined;
 		disableLocations(gl, this.attributes);
 	}
 })();
-grobjects.push(new Bird("Bird One",[10,10,5],1));
-grobjects.push(new Bird("Bird Two",[-2,8,-8],1));
-grobjects.push(new Bird("Bird Three",[-15,12,-15],1));
+grobjects.push(new Bird("Bird",[(Math.random()-0.5)*20,(Math.random()-0.5)*5+10,(Math.random()-0.5)*20],1));

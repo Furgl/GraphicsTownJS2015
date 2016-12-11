@@ -82,6 +82,15 @@ window.onload = function() {
 
     // make some sliders - using my cheesy panels code
     var sliders = makeSliders([["TimeOfDay",0,2400,1200]]);
+    
+    var numBirds = 1;
+    var birdButton = document.createElement("button");
+    birdButton.innerHTML = "Spawn Bird";
+    birdButton.onclick = function() {
+    	numBirds++;
+    	grobjects.push(new Bird("Bird "+numBirds,[(Math.random()-0.5)*20,(Math.random()-0.5)*5+10,(Math.random()-0.5)*20],1));
+    }
+    controls.appendChild(birdButton);
 
     var zoomInfo = document.createElement("span");
     zoomInfo.innerHTML += "P.S. Use the scroll wheel to zoom in and out in ArcBall view";
