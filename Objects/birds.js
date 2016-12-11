@@ -187,13 +187,14 @@ var Bird = undefined;
 		var rotation = twgl.m4.lookAt([0,0,0],Cubic(HermiteDerivative,P,t),[0,1,0]);
 		rotation = twgl.m4.axisRotate(rotation, [0,1,0], -Math.PI/2);
 
-		console.log("end:"+this.end);
-		console.log("current:"+this.position);
-		console.log("prev: " + this.prevPosition[0]);
-		console.log("current: " + this.position[0]);
-		console.log("increasing: " + this.increasing);
-
-		if (this.position[0] < this.end[0] != this.increasing) { //when it reaches distination
+		//console.log("end:"+this.end);
+		//console.log("current:"+this.position);
+		//console.log("prev: " + this.prevPosition[0]);
+		//console.log("current: " + this.position[0]);
+		//console.log("increasing: " + this.increasing);
+		console.log(this.ticks);
+		
+		if (this.position[0] < this.end[0] != this.increasing || this.ticks > 300) { //when it reaches distination
 			console.log("here");
 			this.start = [this.position[0], this.position[1], this.position[2]];
 			do 
