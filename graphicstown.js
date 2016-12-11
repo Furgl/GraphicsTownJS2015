@@ -63,15 +63,15 @@ window.onload = function() {
         arcball.x = 0.02; //added to change reset
         zoom = -10; //added to reset zoom
 
-        drivePos = [0,.2,5];
-        driveTheta = 0;
-        driveXTheta = 0;
+        drivePos = [0,16,-25]; //changed default
+        driveTheta = Math.PI;
+        driveXTheta = -Math.PI/15;
 
     }
     controls.appendChild(resetButton);
 
     // make some checkboxes - using my cheesy panels code
-    var checkboxes = makeCheckBoxes([ ["Run",1], ["DayCycle",1], ["Examine",0]]); //
+    var checkboxes = makeCheckBoxes([ ["Run",1], ["DayCycle",0], ["Examine",0]]); //
 
     // a selector for which object should be examined
     var toExamine = document.createElement("select");
@@ -112,9 +112,9 @@ window.onload = function() {
     var lastTime = Date.now();
 
     // parameters for driving
-    var drivePos = [0,.2,5];
-    var driveTheta = 0;
-    var driveXTheta = 0;
+    var drivePos = [0,16,-25]; //changed default
+    var driveTheta = Math.PI;
+    var driveXTheta = -Math.PI/15;
 
     // cheesy keyboard handling
     var keysdown = {};
